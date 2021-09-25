@@ -11,7 +11,7 @@ const bookUtils = require('./bookUtils');
 
 // app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 
-let allBooks = bookUtils.getAllBooks();
+let books = bookUtils.getBooks();
 const options = {
   year: 'numeric',
   month: 'numeric',
@@ -23,14 +23,14 @@ const urls = bookUtils.getUrls('urls.txt');
 const parseUrls = async () => {
   for (let i = 0; i < urls.length; i++) {
     const [name, price] = await bookUtils.getNameAndPrice(urls[i]);
-    if (!(name in allBooks)) {
-      allBooks[name] = [];
+    if (!(name in books)) {
+      books[name] = [];
     }
     const date = new Date().toLocaleDateString('ru-Latn', options);
-    allBooks[name].push({ date, price });
+    books[name].push({ date, price });
     console.log(`${name} | DONE!`);
   }
 
-  fs.writeFileSync('allBooks.json', JSON.stringify(allBooks, null, 2));
+  fs.writeFileSync('books.json', JSON.stringify(books, null, 2));
 };
 parseUrls();

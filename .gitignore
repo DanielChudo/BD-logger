@@ -27,5 +27,5 @@ yarn-error.log*
 .env
 
 #data list
-allBooks.json
+books.json
 urls.txt

@@ -20,13 +20,13 @@ exports.getUrls = (fileName) => {
   return fs.readFileSync(fileName, 'utf8').split('\n');
 };
 
-exports.getAllBooks = () => {
-  let allBooks;
+exports.getBooks = () => {
+  let books;
   try {
-    allBooks = JSON.parse(fs.readFileSync('allBooks.json', 'utf8'));
+    books = JSON.parse(fs.readFileSync('books.json', 'utf8'));
   } catch (e) {
-    allBooks = {};
+    books = {};
   }
 
-  return allBooks;
+  return books;
 };
