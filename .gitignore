@@ -25,3 +25,6 @@ yarn-error.log*
 
 #config
 .env
+
+#data list
+data.json
