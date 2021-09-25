@@ -6,12 +6,12 @@
   "license": "ISC",
   "description": "",
   "scripts": {
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.10",
     "express": "^4.17.1",
     "needle": "^3.0.0",
-    "tress": "^1.1.4"
+    "nodemon": "^2.0.13"
   }
 }
