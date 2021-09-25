@@ -1,38 +1,36 @@
 const fs = require('fs');
-const tress = require('tress');
-const needle = require('needle');
-const cheerio = require('cheerio');
+const bookUtils = require('./bookUtils');
+// const express = require('express');
 
-const urls = fs.readFileSync('urls.txt', 'utf8').split('\n');
-let results;
-try {
-  results = JSON.parse(fs.readFileSync('data.json', 'utf8'));
-} catch (e) {
-  results = {};
-}
+// const app = express();
+// const PORT = process.env.PORT || 5000;
 
-const q = tress((url, done) => {
-  needle.get(url, (err, res) => {
-    if (err) {
-      throw err;
-    }
+// app.use(function (req, res) {
+//   res.sendFile(__dirname + '/index.html');
+// });
 
-    const $ = cheerio.load(res.body);
-    const vol = $('h1[itemprop="name"]').text().trim();
-    // in dollars
-    const price = $('span.sale-price').text().trim().slice(3);
-    if (!(vol in results)) {
-      results[vol] = [];
-    }
-    results[vol].push({ date: new Date(), price });
-    console.log(`${vol} | DONE!`);
+// app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 
-    done();
-  });
-});
-
-q.drain = () => {
-  fs.writeFileSync('data.json', JSON.stringify(results, null, 2));
+let allBooks = bookUtils.getAllBooks();
+const options = {
+  year: 'numeric',
+  month: 'numeric',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
 };
+const urls = bookUtils.getUrls('urls.txt');
+const parseUrls = async () => {
+  for (let i = 0; i < urls.length; i++) {
+    const [name, price] = await bookUtils.getNameAndPrice(urls[i]);
+    if (!(name in allBooks)) {
+      allBooks[name] = [];
+    }
+    const date = new Date().toLocaleDateString('ru-Latn', options);
+    allBooks[name].push({ date, price });
+    console.log(`${name} | DONE!`);
+  }
 
-q.push(urls);
+  fs.writeFileSync('allBooks.json', JSON.stringify(allBooks, null, 2));
+};
+parseUrls();
