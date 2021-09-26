@@ -30,3 +30,7 @@ exports.getBooks = () => {
 
   return books;
 };
+
+exports.filterName = (name) => {
+  return name.replace(/ /g, '').replace(/\./g, '').replace(/,/g, '');
+};
