@@ -1,0 +1,51 @@
+{{#each books}}
+  <div class="book">
+    <div class="book__info">
+      <img src="{{this.img}}" alt="{{@key}}">
+      <h2>
+        {{@key}}
+      </h2>
+      <p>
+        Min price: {{this.minPrice}}$
+      </p>
+      <p>
+        Max price: {{this.maxPrice}}$
+      </p>
+    </div>
+    <div class="chart-container">
+      <canvas id="{{this.uuid}}"></canvas>
+    </div>
+  </div>
+{{/each}}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
+<script>
+  {{#each books}}
+    const {{this.uuid}} = new Chart('{{this.uuid}}', {
+      type: 'line',
+      data: {
+        datasets: [{
+          label: '{{@key}}',
+          data: 
+            [
+              {{#each this.data}}
+                {
+                  date: '{{this.date}}',
+                  price: '{{this.price}}',
+                },
+              {{/each}}
+            ],
+          borderColor: '#6c5ce7',
+          fill: true,
+          tension: 0.1,
+        }]
+      },
+      options: {
+        maintainAspectRatio: false,
+        parsing: {
+          xAxisKey: 'date',
+          yAxisKey: 'price',
+        },
+      }
+    });
+  {{/each}}
+</script>
