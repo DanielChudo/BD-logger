@@ -2,15 +2,16 @@ const fs = require('fs');
 const needle = require('needle');
 const cheerio = require('cheerio');
 
-exports.getNameAndPrice = async (url) => {
+exports.getBookData = async (url) => {
   const res = await needle('get', url);
   if (res.statusCode === 200) {
     const $ = cheerio.load(res.body);
+    const img = $('.book-img').attr('src');
     const name = $('h1[itemprop="name"]').text().trim();
     // in dollars
-    const price = $('span.sale-price').text().trim().slice(3);
+    const price = Number($('span.sale-price').text().trim().slice(3));
 
-    return [name, price];
+    return { img, name, price };
   } else {
     console.log('FAILED(((');
   }
