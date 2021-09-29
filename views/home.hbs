@@ -1,1 +1,17 @@
+<button id="refresh" onclick="refreshPrices()">Обновить цены</button>
+<div id="loader"></div>
+
 {{>charts books=books}}
+
+<script>
+async function refreshPrices() {
+  document.getElementById('loader').style.display = 'block';
+  const response = await fetch('http://localhost:5000/api/refresh-prices');
+  if (response.ok) {
+    document.getElementById('loader').style.display = 'none';
+    setTimeout(() => location.reload(), 3000);
+  } else {
+    alert("Ошибка: " + response.status);
+  }
+}
+</script>

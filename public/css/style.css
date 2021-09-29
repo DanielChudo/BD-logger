@@ -2,6 +2,16 @@ body {
   font: 14pt Arial;
 }
 
+#refresh {
+  display: block;
+  width: 100%;
+  height: 32px;
+  color: #fff;
+  background-color: #6c5ce7;
+  border: none;
+  cursor: pointer;
+}
+
 .book {
   display: flex;
   padding-bottom: 16px;

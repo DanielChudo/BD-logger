@@ -13,6 +13,7 @@ exports.getBookData = async (url) => {
 
     return { img, name, price };
   } else {
+    // TODO: добавить throw error при плохой ссылке
     console.log('FAILED(((');
   }
 };
