@@ -1,28 +1,76 @@
 const fs = require('fs');
-const needle = require('needle');
+const axios = require('axios').default;
 const cheerio = require('cheerio');
 
-exports.getBookData = async (url) => {
-  const res = await needle('get', url);
-  if (res.statusCode === 200) {
-    const $ = cheerio.load(res.body);
+const options = {
+  year: 'numeric',
+  month: 'numeric',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+};
+
+exports.refreshPrices = async () => {
+  const urls = getUrls('urls.txt');
+  const books = getBooks();
+  let img, name, price;
+
+  for (let i = 0; i < urls.length; i++) {
+    try {
+      ({ img, name, price } = await getBookData(urls[i]));
+    } catch (e) {
+      console.log(`${urls[i]} | ${e.message}!`);
+      continue;
+    }
+
+    if (!(name in books)) {
+      books[name] = {
+        uuid: filterName(name),
+        minPrice: price,
+        maxPrice: price,
+        img,
+        data: [],
+      };
+    }
+
+    if (price > books[name].maxPrice) {
+      books[name].maxPrice = price;
+    }
+
+    // the book may not be available, price = 0
+    if (price && price < books[name].minPrice) {
+      books[name].minPrice = price;
+    }
+
+    const date = new Date().toLocaleDateString('ru-Latn', options);
+    books[name].data.push({ date, price });
+
+    console.log(`${name.padEnd(30)} | ${price.toString().padEnd(6)} | DONE!`);
+  }
+
+  fs.writeFileSync('books.json', JSON.stringify(books, null, 2));
+};
+
+async function getBookData(url) {
+  try {
+    const res = await axios.get(url);
+    const $ = cheerio.load(res.data);
     const img = $('.book-img').attr('src');
     const name = $('h1[itemprop="name"]').text().trim();
     // in dollars
     const price = Number($('span.sale-price').text().trim().slice(3));
 
     return { img, name, price };
-  } else {
-    // TODO: добавить throw error при плохой ссылке
-    console.log('FAILED(((');
+  } catch (e) {
+    throw e;
   }
-};
+}
 
-exports.getUrls = (fileName) => {
+function getUrls(fileName) {
   return fs.readFileSync(fileName, 'utf8').split('\n');
-};
+}
 
-exports.getBooks = () => {
+function getBooks() {
   let books;
   try {
     books = JSON.parse(fs.readFileSync('books.json', 'utf8'));
@@ -31,8 +79,10 @@ exports.getBooks = () => {
   }
 
   return books;
-};
+}
 
-exports.filterName = (name) => {
+exports.getBooks = getBooks;
+
+function filterName(name) {
   return name.replace(/ /g, '').replace(/\./g, '').replace(/,/g, '');
-};
+}

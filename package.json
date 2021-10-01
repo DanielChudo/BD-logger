@@ -9,10 +9,10 @@
     "start": "nodemon server.js"
   },
   "dependencies": {
+    "axios": "^0.22.0",
     "cheerio": "^1.0.0-rc.10",
     "express": "^4.17.1",
     "express-handlebars": "^5.3.4",
-    "needle": "^3.0.0",
     "nodemon": "^2.0.13"
   }
 }
