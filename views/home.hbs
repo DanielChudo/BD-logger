@@ -1,17 +1,47 @@
 <button id="refresh" onclick="refreshPrices()">Refresh prices</button>
+<form name="book" method="POST">
+<input type="text" placeholder="Enter url..." name="url">
+<button type="submit">Add book</button>
+</form>
 <div id="loader"></div>
 
 {{>charts books=books}}
 
 <script>
-async function refreshPrices() {
-  document.getElementById('loader').style.display = 'block';
-  const response = await fetch('http://localhost:5000/api/refresh-prices');
-  if (response.ok) {
+  const form = document.forms.book;
+  form.addEventListener("submit", addBook, true);
+  
+  async function refreshPrices() {
+    document.getElementById('loader').style.display = 'block';
+    const response = await fetch('http://localhost:5000/api/refresh-prices');
+    if (!response.ok) {
+      alert("Error: " + response.status);
+    }
+
     document.getElementById('loader').style.display = 'none';
-    setTimeout(() => location.reload(), 3000);
-  } else {
-    alert("Ошибка: " + response.status);
+    console.log('fgdsfhd');
+    location.reload();
   }
-}
+
+  async function addBook(e) {
+    e.preventDefault();
+    const url = form.elements.url.value;
+
+    document.getElementById('loader').style.display = 'block';
+    const response = await fetch('http://localhost:5000/api/add-book', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ url })
+    });
+
+    if (response.ok) {
+      location.reload();
+    } else {
+      const json = await response.json();
+      alert("Error: " + json.message);
+      document.getElementById('loader').style.display = 'none';
+    }
+  }
 </script>

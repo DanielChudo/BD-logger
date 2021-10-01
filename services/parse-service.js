@@ -84,5 +84,9 @@ function getBooks() {
 exports.getBooks = getBooks;
 
 function filterName(name) {
-  return name.replace(/ /g, '').replace(/\./g, '').replace(/,/g, '');
+  return name.replace(/[^\w]/gi, '');
 }
+
+exports.addBook = (fileName, url) => {
+  fs.appendFileSync(fileName, `\n${url}`);
+};
