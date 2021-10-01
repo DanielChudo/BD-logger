@@ -16,6 +16,10 @@ exports.refreshPrices = async () => {
   let img, name, price;
 
   for (let i = 0; i < urls.length; i++) {
+    if (!urls[i]) {
+      continue;
+    }
+
     try {
       ({ img, name, price } = await getBookData(urls[i]));
     } catch (e) {
