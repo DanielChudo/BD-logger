@@ -15,6 +15,12 @@ exports.refreshPrices = async () => {
   const books = getBooks();
   let img, name, price;
 
+  console.log('-'.repeat(65));
+  console.log(
+    '|                   Name                   |  Price  |  Status  |'
+  );
+  console.log('-'.repeat(65));
+
   for (let i = 0; i < urls.length; i++) {
     if (!urls[i]) {
       continue;
@@ -23,7 +29,13 @@ exports.refreshPrices = async () => {
     try {
       ({ img, name, price } = await getBookData(urls[i]));
     } catch (e) {
-      console.log(`${urls[i]} | ${e.message}!`);
+      let url = urls[i];
+      if (url.length >= 40) {
+        url = url.substr(0, 37) + '...';
+      }
+      console.log(
+        `| ${url.padEnd(40)} | ${'0$'.padEnd(7)} | ${'FAILED!'.padEnd(8)} |`
+      );
       continue;
     }
 
@@ -49,8 +61,17 @@ exports.refreshPrices = async () => {
     const date = new Date().toLocaleDateString('ru-Latn', options);
     books[name].data.push({ date, price });
 
-    console.log(`${name.padEnd(30)} | ${price.toString().padEnd(6)} | DONE!`);
+    price = String(price) + '$';
+    if (name.length >= 40) {
+      name = name.substr(0, 37) + '...';
+    }
+
+    console.log(
+      `| ${name.padEnd(40)} | ${price.padEnd(7)} | ${'DONE!'.padEnd(8)} |`
+    );
   }
+
+  console.log('-'.repeat(65));
 
   fs.writeFileSync('books.json', JSON.stringify(books, null, 2));
 };

@@ -25,8 +25,9 @@ app.get('/', (req, res) => {
   });
 });
 
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
-
-parseService.refreshPrices();
-// run parsing every day
-setInterval(parseService.refreshPrices, 86400000);
+app.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
+  parseService.refreshPrices();
+  // run parsing every day
+  setInterval(parseService.refreshPrices, 86400000);
+});
