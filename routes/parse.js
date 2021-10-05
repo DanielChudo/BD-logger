@@ -14,7 +14,7 @@ router.get('/refresh-prices', async (req, res) => {
 router.post('/add-books', async (req, res) => {
   let urls = req.body.urls;
   if (regexURL.test(urls)) {
-    parseService.addBooks('urls.txt', urls.match(regexURL).join('\n'));
+    parseService.addBooks('urls.txt', urls.match(regexURL));
     await parseService.refreshPrices();
     res.json({ message: 'Books successfully added' });
   } else {

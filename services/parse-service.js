@@ -126,5 +126,9 @@ function filterName(name) {
 }
 
 exports.addBooks = (fileName, urls) => {
-  fs.appendFileSync(fileName, `\n${urls}`);
+  const oldUrls = getUrls();
+  // remove duplicates
+  urls = [...new Set(urls)];
+  urls = urls.filter((url) => !oldUrls.includes(url));
+  fs.appendFileSync(fileName, `\n${urls.join('\n')}`);
 };
