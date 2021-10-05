@@ -11,7 +11,12 @@ const options = {
 };
 
 exports.refreshPrices = async () => {
-  const urls = getUrls('urls.txt');
+  const urls = getUrls();
+  if (!urls.length) {
+    console.log('urls.txt is empty');
+    return;
+  }
+
   const books = getBooks();
   let img, name, price;
 
@@ -91,8 +96,16 @@ async function getBookData(url) {
   }
 }
 
-function getUrls(fileName) {
-  return fs.readFileSync(fileName, 'utf8').split('\n');
+function getUrls() {
+  let content;
+  try {
+    content = fs.readFileSync('urls.txt', 'utf8').split('\n');
+  } catch (e) {
+    fs.writeFileSync('urls.txt', '');
+    content = [];
+  }
+
+  return content;
 }
 
 function getBooks() {
