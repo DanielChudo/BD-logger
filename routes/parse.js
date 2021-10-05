@@ -4,21 +4,19 @@ const parseService = require('../services/parse-service');
 
 const router = express.Router();
 
-const regexURL =
-  /https?:\/\/www\.bookdepository\.com\/[-a-zA-Z0-9()@:%_+.~#?&=]*\/[0-9]*.*/;
+const regexURL = /https?:\/\/(www\.)?bookdepository\.com\/[-\w]*\/\d+/gi;
 
 router.get('/refresh-prices', async (req, res) => {
   await parseService.refreshPrices();
   res.json({ message: 'Prices refreshed' });
 });
 
-router.post('/add-book', async (req, res) => {
-  let url = req.body.url;
-  url = url.trim();
-  if (regexURL.test(url)) {
-    parseService.addBook('urls.txt', req.body.url);
+router.post('/add-books', async (req, res) => {
+  let urls = req.body.urls;
+  if (regexURL.test(urls)) {
+    parseService.addBooks('urls.txt', urls.match(regexURL).join('\n'));
     await parseService.refreshPrices();
-    res.json({ message: 'Book successfully added' });
+    res.json({ message: 'Books successfully added' });
   } else {
     res.status(400).json({ message: 'Incorrect url' });
   }

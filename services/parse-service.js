@@ -125,6 +125,6 @@ function filterName(name) {
   return name.replace(/[^\w]/gi, '');
 }
 
-exports.addBook = (fileName, url) => {
-  fs.appendFileSync(fileName, `\n${url}`);
+exports.addBooks = (fileName, urls) => {
+  fs.appendFileSync(fileName, `\n${urls}`);
 };

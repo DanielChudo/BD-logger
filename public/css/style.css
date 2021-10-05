@@ -25,15 +25,25 @@ form {
   display: flex;
 }
 
-form > input {
+form > input,
+form > textarea {
   flex-grow: 1;
   margin-right: 8px;
   font-size: 12pt;
   border: 2px solid var(--main);
 }
 
-form > input:focus {
+form > textarea {
+  resize: none;
+}
+
+form > input:focus,
+form > textarea:focus {
   outline: none;
+}
+
+form > button {
+  height: auto;
 }
 
 .book {
@@ -65,7 +75,7 @@ form > input:focus {
   margin-right: auto;
   width: 200px;
   height: 300px;
-  object-fit: contain;
+  object-fit: cover;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 

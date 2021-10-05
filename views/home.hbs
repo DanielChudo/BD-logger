@@ -1,7 +1,7 @@
 <button id="refresh" onclick="refreshPrices()">Refresh prices</button>
 <form name="book" method="POST">
-<input type="text" placeholder="Enter url..." name="url">
-<button id="submit" type="submit">Add book</button>
+<textarea type="text" rows="3" placeholder="Enter urls..." name="urls"></textarea>
+<button id="submit" type="submit">Add books</button>
 </form>
 <div id="loader"></div>
 
@@ -9,7 +9,7 @@
 
 <script>
   const form = document.forms.book;
-  form.addEventListener('submit', addBook, true);
+  form.addEventListener('submit', addBooks, true);
   
   async function refreshPrices() {
     document.getElementById('loader').style.display = 'block';
@@ -25,19 +25,19 @@
     location.reload();
   }
 
-  async function addBook(e) {
+  async function addBooks(e) {
     e.preventDefault();
-    const url = form.elements.url.value;
+    const urls = form.elements.urls.value;
 
     document.getElementById('loader').style.display = 'block';
     document.getElementById('submit').disabled = true;
 
-    const response = await fetch('/api/add-book', {
+    const response = await fetch('/api/add-books', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ url })
+      body: JSON.stringify({ urls })
     });
 
     document.getElementById('loader').style.display = 'none';
