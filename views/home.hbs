@@ -1,7 +1,7 @@
 <button id="refresh" onclick="refreshPrices()">Refresh prices</button>
 <form name="book" method="POST">
 <input type="text" placeholder="Enter url..." name="url">
-<button type="submit">Add book</button>
+<button id="submit" type="submit">Add book</button>
 </form>
 <div id="loader"></div>
 
@@ -9,17 +9,19 @@
 
 <script>
   const form = document.forms.book;
-  form.addEventListener("submit", addBook, true);
+  form.addEventListener('submit', addBook, true);
   
   async function refreshPrices() {
     document.getElementById('loader').style.display = 'block';
-    const response = await fetch('http://localhost:5000/api/refresh-prices');
+    document.getElementById('refresh').disabled = true;
+
+    const response = await fetch('/api/refresh-prices');
     if (!response.ok) {
-      alert("Error: " + response.status);
+      alert('Error: ' + response.status);
     }
 
     document.getElementById('loader').style.display = 'none';
-    console.log('fgdsfhd');
+    document.getElementById('refresh').disabled = false;
     location.reload();
   }
 
@@ -28,7 +30,9 @@
     const url = form.elements.url.value;
 
     document.getElementById('loader').style.display = 'block';
-    const response = await fetch('http://localhost:5000/api/add-book', {
+    document.getElementById('submit').disabled = true;
+
+    const response = await fetch('/api/add-book', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -36,12 +40,14 @@
       body: JSON.stringify({ url })
     });
 
+    document.getElementById('loader').style.display = 'none';
+    document.getElementById('submit').disabled = false;
+
     if (response.ok) {
       location.reload();
     } else {
       const json = await response.json();
-      alert("Error: " + json.message);
-      document.getElementById('loader').style.display = 'none';
+      alert('Error: ' + json.message);
     }
   }
 </script>
